@@ -7,12 +7,13 @@ def solve(board, num_queens):
     for queen in range(num_queens):
         # initialize empty row for that queen
         board[queen] = [0] * 8
-
         # place queens staring at lowest index
         for index in range(len(board)):
             board[queen][index] = 1
             if is_board_valid(board):
                 solve(board, num_queens - 1)
+            # this position failed, try the next one
+            board[queen][index] = 0
 
     return board
 
@@ -31,7 +32,6 @@ def is_board_valid(board):
         row_index = row[0]
         actual_row = row[1]
         if 1 in actual_row:
-            print(row_index, actual_row.index(1))
             if not test_diagonals(board, (row_index, actual_row.index(1))): return False
 
     return True
@@ -79,8 +79,8 @@ def test_diagonals(board, start_position):
 
 
 def test_my_test(empty_board):
-    empty_board[5][5] = 1
-    empty_board[0][0] = 1
+    empty_board[0][7] = 1
+    empty_board[7][0] = 1
     for row in empty_board:
         print row
 
@@ -93,5 +93,8 @@ if __name__ == '__main__':
     for i in range(board_size):
         board[i] = [0] * board_size
 
-    test_my_test(board)
-    # solve([],board_size)
+    # test_my_test(board)
+    new_board = solve(board,board_size)
+
+    for row in new_board:
+        print row
