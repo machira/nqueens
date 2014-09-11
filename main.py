@@ -1,3 +1,5 @@
+import time
+
 __author__ = 'Raymond Macharia <raymond.machira@gmail.com>'
 
 
@@ -10,8 +12,9 @@ def solve(board, num_queens):
         # place queens staring at lowest index
         for index in range(len(board)):
             board[queen][index] = 1
-            if is_board_valid(board):
-                solve(board, num_queens - 1)
+            if is_board_valid(board) and is_board_valid(solve(board, num_queens - 1)):
+                # this works
+                break
             # this position failed, try the next one
             board[queen][index] = 0
 
@@ -31,8 +34,23 @@ def is_board_valid(board):
     for row in enumerate(board):
         row_index = row[0]
         actual_row = row[1]
+        # if there is a queen on  this
         if 1 in actual_row:
             if not test_diagonals(board, (row_index, actual_row.index(1))): return False
+
+    return True
+
+
+def span_out_on_a_diagonal(board, start_position, row_increment, column_increment):
+    r1, c1 = start_position
+    r1 += row_increment
+    c1 += column_increment
+
+    while -1 < r1 < len(board) and -1 < c1 < len(board):
+        if board[r1][c1] == 1:
+            return False
+        r1 += row_increment
+        c1 += column_increment
 
     return True
 
@@ -44,46 +62,22 @@ def test_diagonals(board, start_position):
     # 1 denotes increasing.
     # Clearly there is a lot of repetition here, but I needed to do it to crystalise my process
 
-    r1, c1 = _r1, _c1 = _r0, c0 = r0, _c0 = start_position
-    r1 += 1
-    c1 += 1
-    while r1 < len(board) and c1 < len(board):
-        if board[r1][c1] == 1:
-            return False
-        r1 += 1
-        c1 += 1
-    _r1 += -1
-    _c1 += -1
-    while _r1 >= -1 and _c1 > -1:
-        if board[_r1][_c1] == 1:
-            return False
-        _r1 += -1
-        _c1 += -1
-
-    _r0 += -1
-    c0 += 1
-    while _r0 > -1 and c0 < len(board):
-        if board[_r0][c0] == 1:
-            return False
-        _r0 += -1
-        c0 += 1
-    r0 += 1
-    _c0 += -1
-    while r0 < len(board) and _c0 > -1:
-        if board[r0][_c0] == 1:
-            return False
-        r0 += 1
-        _c0 += -1
-
+    # r1, c1 = start_position
+    if not (span_out_on_a_diagonal(board, start_position, 1, 1)
+            and span_out_on_a_diagonal(board, start_position, -1, -1)
+            and span_out_on_a_diagonal(board, start_position, -1, 1)
+            and span_out_on_a_diagonal(board, start_position, 1, -1)):
+        return False
     return True
 
 
-def test_my_test(empty_board):
-    empty_board[0][7] = 1
-    empty_board[7][0] = 1
-    for row in empty_board:
-        print row
+def test_my_test(empty_board, row_cols):
+    for rw, cl in row_cols:
+        empty_board[rw][cl] = 1
 
+    for row_ in empty_board:
+        print row_
+    time.sleep(0.2)
     assert (is_board_valid(empty_board))
 
 
@@ -93,8 +87,8 @@ if __name__ == '__main__':
     for i in range(board_size):
         board[i] = [0] * board_size
 
-    # test_my_test(board)
-    new_board = solve(board,board_size)
+    test_my_test(board, [(0, 7), (6, 0)])
+    # new_board = solve(board,board_size)
 
-    for row in new_board:
-        print row
+    # for row in new_board:
+    # print row
