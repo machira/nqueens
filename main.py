@@ -20,7 +20,7 @@ def solve(board, num_queens):
 def is_board_valid(board):
     # test all rows
     for row in range(len(board)):
-        if sum(row) > 1 : return False
+        if sum(board[row]) > 1 : return False
     # test all columns
     for column_index in range(len(board)):
         column = [board[index][column_index] for index in range(len(board))]
@@ -40,13 +40,14 @@ def test_diagonals(board, start_position):
     # These names help us remember what pairs are heading which way.
     # _ denotes decreasing.
     # 1 denotes increasing.
-    # Clearly there is a lot of repetition here, but I needed to do it to crystalise the process
+    # Clearly there is a lot of repetition here, but I needed to do it to crystalise my process
 
 
     r1,c1 = _r1,_c1 = _r0,c0 = r0,_c0  = start_position
     while(r1 < len(board) and c1 < len(board)):
         r1+=1
         c1+=1
+        print r1,c1
         if board[r1][c1] == 1: return False
 
     while(_r1 < len(board) and _c1 < len(board)):
@@ -66,9 +67,17 @@ def test_diagonals(board, start_position):
         if board[r0][_c0] == 1: return False
     return True
 
+def test_my_test(empty_board):
+    empty_board[5][5] = 1
+    empty_board[6][7] = 1
+
+    assert(is_board_valid(empty_board))
+
 if __name__ == '__main__':
     board_size = 8
-    board = []
+    board = [None]*board_size
     for i in range(board_size):
-        board[i] =[] * board_size
-    solve([],board_size)
+        board[i] =[0] * board_size
+
+    test_my_test(board)
+    # solve([],board_size)
