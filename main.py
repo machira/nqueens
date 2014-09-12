@@ -4,22 +4,23 @@ __author__ = 'Raymond Macharia <raymond.machira@gmail.com>'
 
 
 def solve(board, num_queens):
-    if num_queens == 0: return board
+    if num_queens == 0:
+        return board,True
 
     # for queen in range(num_queens):
         # initialize empty row for that queen
     queen = len(board) - num_queens
     # board[queen] = [0] * 8
     # place queens staring at lowest index
-    for index in range(queen,len(board)):
+    for index in range(len(board)):
         board[queen][index] = 1
-        if is_board_valid(board) and is_board_valid(solve(board, num_queens - 1)):
+        if is_board_valid(board) and solve(board,num_queens-1)[1]:
             # this works
-            break
+            return board, True
         # this position failed, try the next one
         board[queen][index] = 0
 
-    return board
+    return board, False
 
 
 def is_board_valid(board):
@@ -90,6 +91,9 @@ if __name__ == '__main__':
         board[i] = [0] * board_size
 
     # test_my_test(board, [(0, 7), (6, 0)])
-    new_board = solve(board,board_size)
-    for row in new_board:
-        print row
+    new_board,is_solved = solve(board,board_size)
+    if not is_solved:
+        print 'no solution'
+    else:
+        for row in new_board:
+            print row
