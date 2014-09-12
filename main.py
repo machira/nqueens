@@ -6,17 +6,18 @@ __author__ = 'Raymond Macharia <raymond.machira@gmail.com>'
 def solve(board, num_queens):
     if num_queens == 0: return board
 
-    for queen in range(num_queens):
+    # for queen in range(num_queens):
         # initialize empty row for that queen
-        board[queen] = [0] * 8
-        # place queens staring at lowest index
-        for index in range(len(board)):
-            board[queen][index] = 1
-            if is_board_valid(board) and is_board_valid(solve(board, num_queens - 1)):
-                # this works
-                break
-            # this position failed, try the next one
-            board[queen][index] = 0
+    queen = len(board) - num_queens
+    # board[queen] = [0] * 8
+    # place queens staring at lowest index
+    for index in range(queen,len(board)):
+        board[queen][index] = 1
+        if is_board_valid(board) and is_board_valid(solve(board, num_queens - 1)):
+            # this works
+            break
+        # this position failed, try the next one
+        board[queen][index] = 0
 
     return board
 
@@ -72,6 +73,7 @@ def test_diagonals(board, start_position):
 
 
 def test_my_test(empty_board, row_cols):
+    # place a queen on each cordinate
     for rw, cl in row_cols:
         empty_board[rw][cl] = 1
 
@@ -87,8 +89,7 @@ if __name__ == '__main__':
     for i in range(board_size):
         board[i] = [0] * board_size
 
-    test_my_test(board, [(0, 7), (6, 0)])
-    # new_board = solve(board,board_size)
-
-    # for row in new_board:
-    # print row
+    # test_my_test(board, [(0, 7), (6, 0)])
+    new_board = solve(board,board_size)
+    for row in new_board:
+        print row
