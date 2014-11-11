@@ -1,32 +1,55 @@
 import time
+import copy
 from itertools import product
 
 __author__ = 'Raymond Macharia <raymond.machira@gmail.com>'
 
-BOARD_SIZE = 8
+BOARD_SIZE = 8 ## Also analogous to number of queens to place.
 
 
-def solve(board, constraints):
+def solve(board, column = 0, constraints = {}):
 
-    if goal_found(board):
-        return board, True
+    if column >= BOARD_SIZE:
+        return board, goal_found(board)
 
+    for i in [i for i in range(0,BOARD_SIZE) if (column in constraints and i not in constraints[column]) or (column not in constraints and True)]:
+        # create a new mutable board
+        new_board = board[:]
+        constraints_copy = copy.deepcopy(constraints)
+        new_board[column] = i
 
-    # for queen in range(num_queens):
-        # initialize empty row for that queen
-    queen = len(board) - num_queens
-    # board[queen] = [0] * 8
-    # place queens staring at lowest index
-    for index in range(len(board)):
-        board[queen][index] = 1
-        if solve(board,num_queens-1)[1] and goal_found(board):
-            # this works
-            return board, True
-        # this position failed, try the next one
-        board[queen][index] = 0
+        new_constraints = create_constraints(column,i)
+
+        for key in new_constraints.keys():
+            if key in constraints_copy: constraints_copy[key] = constraints_copy[key].union(new_constraints[key])
+            else: constraints_copy[key] = new_constraints[key]
+
+        sol_board, solved = solve(new_board, column=column+1, constraints=constraints_copy)
+        if solved:
+            return sol_board, True
 
     return board, False
 
+def create_constraints(col, choice):
+    # dictionary of new constraints introduced by this choice.
+    dict_constraints = {}
+    r1 = choice - 1
+    r2 = choice + 1
+
+    for i in range(col+1,BOARD_SIZE):
+        c = set()
+        # remove same row
+        c.add(choice)
+        if r1 > -1:
+            c.add(r1)
+            r1 -= 1
+        if r2 < BOARD_SIZE:
+            c.add(r2)
+            r2 += 1
+
+        dict_constraints[i] = c
+
+    return dict_constraints
 
 def goal_found(board):
     # alldiff constraint
@@ -100,6 +123,9 @@ def show_board(board):
 if __name__ == '__main__':
     # board = initialise()
     # play(board)
-    BOARD_SIZE = 4
+    BOARD_SIZE = 8
     board = [1,3,0,2]
-    goal_found(board)
+    # goal_found(board)
+    # create_constraints(0,0)
+    board, solved = solve([0,0,0,0,0,0,0,0])
+    if solved: show_board(board)

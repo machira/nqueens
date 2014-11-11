@@ -14,7 +14,7 @@ if __name__ == '__main__':
         if len(sys.argv) > 2:
             NUM_TRIES = int(sys.argv[2])
 
-    start_board = Nqueens.initialise(board_size=NUM_PIECES)
-
-
-    final_board, is_solved = Nqueens.solve(start_board)
+    # start_board = Nqueens.initialise(board_size=NUM_PIECES)
+    #
+    #
+    # final_board, is_solved = Nqueens.solve(start_board)
